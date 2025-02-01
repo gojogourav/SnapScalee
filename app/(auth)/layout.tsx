@@ -6,7 +6,6 @@ import {
   SignedOut,
   UserButton
 } from '@clerk/nextjs'
-import AuthButtons from '../components/AuthButtons';
 
 
 
