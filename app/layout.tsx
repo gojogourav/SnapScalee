@@ -9,6 +9,7 @@ import {
   SignedOut,
   UserButton
 } from '@clerk/nextjs'
+import TopBar from "./(components)/TopBar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,10 +35,8 @@ export default function RootLayout({
     <ClerkProvider>
       <html>
       
-        <body
-        
-        >
-
+        <body className="bg-black">
+        <TopBar/>
           {children}
         </body>
     </html>
