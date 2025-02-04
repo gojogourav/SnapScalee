@@ -5,9 +5,9 @@ export  default async function Home() {
   const { userId } = await auth();
   
   return (
-    <div className="...">
+    <div className="text-white font-sans text-sm font-medium">
       {userId && (
-        <h1 className="text-2xl font-bold">Welcome back, User!</h1>
+        <div className="">Welcome back, User!</div>
       )}
       {/* rest of your existing content */}
     </div>

@@ -16,7 +16,7 @@ function TopBar() {
                 
                 <Link href='/social-share' className='cursor-pointer'>
     
-                Social Seed
+                Photo Edit
                 </Link>
                 <Link href='/video-share' className='cursor-pointer'>
     

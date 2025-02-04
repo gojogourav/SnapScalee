@@ -116,91 +116,148 @@ const socialMediaFormats = {
     },
 };
 
-type SocialFormat = keyof typeof socialMediaFormats
-
+type SocialPlatform = keyof typeof socialMediaFormats;
+type PlatformFormat<T extends SocialPlatform> = keyof typeof socialMediaFormats[T];
 
 function SocialShare() {
-    const [uploadedImage, setUploadedImage] = useState<string | null>(null);
-    const [selectedFormat, setSelectedFormat] = useState<SocialFormat>('instagram')
-    const [isUploading, setIsUploading] = useState(false);
-    const [transforming, setIsTransforming] = useState(false)
+    const [uploadedImage, setUploadedImage] = useState<string | null>(null)
+    const [selectedPlatform, setSelectedPlatform] = useState<SocialPlatform>("instagram")
+    const [selectedFormat, setSelectedFormat] = useState<string>("profilePicture")
+    const [isUploading, setIsUploading] = useState(false)
     const imageRef = useRef<HTMLImageElement>(null);
 
-
+    // Set initial format when platform changes
     useEffect(() => {
-        if (uploadedImage) {
-            setIsTransforming(true);
+        const formats = Object.keys(socialMediaFormats[selectedPlatform])
+        setSelectedFormat(formats[0])
+    }, [selectedPlatform])
 
-        }
-    }, [selectedFormat, uploadedImage])
-
-    // const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    //     const file = event.target.files?.[0];
-    //     if (!file) return;
-    //     setIsUploading(true);
-    //     const formData = new FormData();
-    //     formData.append("file", file);
-
-    //     try {
-    //         const response = await fetch("/api/image-upload", {
-    //             method: "POST",
-    //             body: formData
-    //         })
-    //         if (!response.ok) throw new Error("Failed to upload image");
-    //         const data = await response.json();
-    //         setUploadedImage(data.publicId)
-
-    //     } catch (error) {
-    //         console.log(error);
-    //         alert("Failed to upload image")
-
-    //     }
-    // }
-    const handleFileUpload = async (event:React.ChangeEvent<HTMLInputElement>)=>{
+    const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0]
-        if(!file) return
+        if (!file) return
         setIsUploading(true)
-        const formData = new FormData();
-        formData.append("file",file);
 
-        try{
-            const response = await fetch("/api/image-upload",{
-                method:"POST",
-                body:formData
+        const formData = new FormData()
+        formData.append("file", file)
+
+        try {
+            const response = await fetch("/api/image-upload", {
+                method: "POST",
+                body: formData
             })
-            if(!response.ok) throw new Error("Failed to upload image");
-            const data = await response.json();
 
-        }catch(error){
-
+            if (!response.ok) throw new Error("Failed to upload image")
+            const data = await response.json()
+            setUploadedImage(data.public_id)
+        } catch (error) {
+            console.error(error)
+            alert("Failed to upload image")
+        } finally {
+            setIsUploading(false)
         }
     }
 
-    const handleDownload = ()=>{
-        if(!imageRef.current) return;
-        fetch(imageRef.current.src).then((response)=>response.blob())
-        .then((blob)=>{
-            const url = window.URL.createObjectURL(blob)
-            const link = document.createElement("a");
-            link.href = url;
-            link.download = `${selectedFormat
-                .replace(/\s+/g,"_")
-                .toLowerCase()
-            }.png`
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            window.URL.revokeObjectURL(url);
-            document.body.removeChild(link);
-        })
+    const handleDownload = () => {
+        if (!imageRef.current) return
+        
+        const link = document.createElement('a')
+        link.href = imageRef.current.src
+        link.download = `social-media-${Date.now()}`
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
     }
+
+    const currentFormat = socialMediaFormats[selectedPlatform][selectedFormat as keyof typeof socialMediaFormats[typeof selectedPlatform]]
+
     return (
-        <div className='h-screen w-full bg-black'>
-            <div className=' flex items-center justify-center  h-screen text-white'>
-                Social Share
+        <div className="max-w-4xl mx-auto p-6 text-white">
+            <h1 className="text-3xl font-bold mb-8">Social Media Image Editor</h1>
+
+            <div className="mb-6">
+                <label className="mt-2 flex justify-center px-6 pt-5 pb-6 border-2 border-dashed rounded-lg">
+                    Upload Image:
+                    <input
+                        type="file"
+                        accept='image/png image/jpeg imageg/webp'
+                        onChange={handleFileUpload}
+                        className="ml-4 px-4 py-2 border rounded bg-white text-black"
+                        disabled={isUploading}
+                    />
+                </label>
+                {isUploading && <p className="text-blue-500">Uploading...</p>}
             </div>
+
+            {uploadedImage && (
+                <div className="space-y-6">
+                    <div className="grid grid-cols-2 gap-4">
+                        <div>
+                            <label className="block mb-2 font-medium">
+                                Platform:
+                                <select
+                                    value={selectedPlatform}
+                                    onChange={(e) => setSelectedPlatform(e.target.value as SocialPlatform)}
+                                    className="ml-2 p-2 border rounded bg-white text-black w-full"
+                                >
+                                    {Object.keys(socialMediaFormats).map((platform) => (
+                                        <option key={platform} value={platform}>
+                                            {platform.charAt(0).toUpperCase() + platform.slice(1)}
+                                        </option>
+                                    ))}
+                                </select>
+                            </label>
+                        </div>
+
+                        <div>
+                            <label className="block mb-2 font-medium">
+                                Format:
+                                <select
+                                    value={selectedFormat}
+                                    onChange={(e) => setSelectedFormat(e.target.value)}
+                                    className="ml-2 p-2 border rounded bg-white text-black w-full"
+                                >
+                                    {Object.keys(socialMediaFormats[selectedPlatform]).map((format) => (
+                                        <option key={format} value={format}>
+                                            {format.replace(/([A-Z])/g, ' $1').trim()}
+                                        </option>
+                                    ))}
+                                </select>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div className="border p-4 rounded-lg">
+                        <div className="mb-4">
+                            <h3 className="text-lg font-semibold">Preview</h3>
+                            <p className="text-sm text-gray-400">
+                                {currentFormat.width}×{currentFormat.height}px ({currentFormat.aspectRatio})
+                            </p>
+                        </div>
+
+                        <div className="relative" style={{ aspectRatio: currentFormat.aspectRatio }}>
+                            <CldImage
+                                ref={imageRef}
+                                src={uploadedImage}
+                                width={currentFormat.width}
+                                height={currentFormat.height}
+                                crop="fill"
+                                gravity="auto"
+                                alt="Social media preview"
+                                className="rounded-lg border"
+                            />
+                        </div>
+
+                        <button
+                            onClick={handleDownload}
+                            className="mt-4 px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+                        >
+                            Download Image
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     )
 }
 
-export default SocialShare
+export default SocialShare;
