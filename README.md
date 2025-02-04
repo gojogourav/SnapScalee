@@ -1,36 +1,53 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Next.js Media Uploader & Downloader
+
+A full-stack media uploader and downloader built with **Next.js** (with TypeScript), **Cloudinary** for media storage, **Prisma** as the ORM, **NeonDB** as the PostgreSQL hosting solution, and **Clerk** for authentication. This project demonstrates how to upload videos/images, transform them on Cloudinary, and force downloads with Cloudinary's `fl_attachment` flag.
+
+## Table of Contents
+
+- [Features](#features)
+- [Technologies](#technologies)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+  - [Environment Variables](#environment-variables)
+- [Usage](#usage)
+- [Project Structure](#project-structure)
+- [Contributing](#contributing)
+- [License](#license)
+
+## Features
+
+- **User Authentication:** Powered by [Clerk](https://clerk.dev/).
+- **Media Uploads:** Upload videos and images to Cloudinary.
+- **Cloudinary Transformations:** Generate dynamic URLs (e.g., force download with `fl_attachment`).
+- **Database Management:** Store media metadata in a NeonDB PostgreSQL database using Prisma.
+- **Responsive UI:** Built with Next.js and Tailwind CSS.
+- **TypeScript:** Full type safety across the project.
+
+## Technologies
+
+- [Next.js](https://nextjs.org/) with **TypeScript**
+- [Cloudinary](https://cloudinary.com/) for image and video management
+- [Prisma](https://www.prisma.io/) ORM for database management
+- [NeonDB](https://neon.tech/) (PostgreSQL hosting)
+- [Clerk](https://clerk.dev/) for authentication
+- [Axios](https://axios-http.com/) for HTTP requests
+- [Tailwind CSS](https://tailwindcss.com/) for styling (optional)
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **Node.js** (v14 or later)
+- **Yarn** or **npm**
+- A [Cloudinary account](https://cloudinary.com/)
+- A [NeonDB](https://neon.tech/) or other PostgreSQL database
+- A [Clerk account](https://clerk.dev/) for authentication
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Installation
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. **Clone the repository:**
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+   ```bash
+   git clone https://github.com/yourusername/nextjs-media-uploader.git
+   cd nextjs-media-uploader
